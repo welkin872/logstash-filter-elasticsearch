@@ -85,6 +85,7 @@ class LogStash::Filters::Elasticsearch < LogStash::Filters::Base
   public
   def filter(event)
     return unless filter?(event)
+    tries = 3
 
     begin
       query_str = event.sprintf(@query)
@@ -96,6 +97,16 @@ class LogStash::Filters::Elasticsearch < LogStash::Filters::Base
       end
 
       filter_matched(event)
+    rescue Elasticsearch::Transport::Transport::Error => e
+      tries -= 1
+      if tries > 0
+        @logger.warn("Retry to query elasticsearch for previous event",
+                     :query => query_str, :event => event, :error => e)
+        retry
+      else
+        @logger.warn("Failed to query elasticsearch for previous event",
+                     :query => query_str, :event => event, :error => e)
+      end
     rescue => e
       @logger.warn("Failed to query elasticsearch for previous event",
                    :query => query_str, :event => event, :error => e)
