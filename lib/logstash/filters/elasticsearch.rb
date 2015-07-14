@@ -2,7 +2,8 @@ require "logstash/filters/base"
 require "logstash/namespace"
 require "logstash/util/fieldreference"
 require "base64"
-
+require 'typhoeus'
+require 'typhoeus/adapters/faraday'
 
 # Search elasticsearch for a previous log event and copy some fields from it
 # into the current event.  Below is a complete example of how this filter might
