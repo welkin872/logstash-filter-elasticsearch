@@ -1,6 +1,5 @@
 require "logstash/filters/base"
 require "logstash/namespace"
-require "logstash/util/fieldreference"
 require "base64"
 require 'typhoeus'
 require 'typhoeus/adapters/faraday'
